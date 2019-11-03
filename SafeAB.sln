@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "safe-ab", "safe-ab\safe-ab.fsproj", "{7624991D-CED6-4531-97FC-69395D3CD78D}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "SafeAB", "SafeAB\SafeAB.fsproj", "{7624991D-CED6-4531-97FC-69395D3CD78D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

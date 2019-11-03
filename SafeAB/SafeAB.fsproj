@@ -3,7 +3,7 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>netcoreapp3.0</TargetFramework>
-        <RootNamespace>safe_ab</RootNamespace>
+        <RootNamespace>SafeAB</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
