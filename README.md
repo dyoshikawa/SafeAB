@@ -1,0 +1,1 @@
+https://rosettacode.org/wiki/URL_parser#F.23
