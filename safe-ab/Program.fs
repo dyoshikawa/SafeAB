@@ -1,26 +1,39 @@
 ﻿open System
 open System.Diagnostics
+open System.Text.RegularExpressions
 
 let makeErrorMessage msg: string =
     sprintf "SafeAB: %s" msg
+    
+let allowedHosts (): string list =
+    [ "localhost" ]
 
 let isAllowedUrl (url: Uri): bool =
-    url.Host = "localhost"
+    allowedHosts ()
+    |> List.contains url.Host
+
+let isUrl (target: string) =
+    Regex.IsMatch(target, @"^s?https?://[-_.!~*'()a-zA-Z0-9;/?:@&=+$,%#]+$" )
+
+let parseUrl (target: string): Result<Uri, string> =
+    match isUrl target with
+    | true -> Ok (Uri(target))
+    | false -> Error "Invalid url."
 
 let pickUrl (args: string []): Result<Uri, string> =
-    let urls: string [] = Array.filter (fun (arg: string) -> arg = "localhost") args
-    let parsedUrl = Uri(urls.[0])
-    if urls.Length = 1 then Ok parsedUrl
-    else Error "Invalid target url count."
+    let urls: string [] = Array.filter (fun (arg: string) -> isUrl arg) args
+    match urls.Length with
+    | 0 -> Error "Undefined target url."
+    | 1 -> Ok (Uri(urls.[0]))
+    | _ -> Error "Target urls are too much."
 
 let validate (argv: string []): Result<string, string> =
-    let url = pickUrl argv
-    match url with
+    match pickUrl argv with
     | Error msg -> Error msg
     | Ok url ->
         match isAllowedUrl url with
         | false -> Error "Disallowed URL."
-        | true -> Ok ""
+        | true -> Ok (String.concat " " argv)
 
 let echoErrorMessage (message: string): int =
     printfn "%s" message
