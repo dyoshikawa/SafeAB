@@ -2,7 +2,7 @@ open System
 open System.Diagnostics
 open System.Text.RegularExpressions
 
-let makeErrorMessage msg: string = sprintf "SafeAB: %s" msg
+let makeMessage msg: string = sprintf "SafeAB: %s" msg
 
 let allowedHosts(): string list = [ "localhost" ]
 
@@ -30,14 +30,16 @@ let validate (argv: string []): Result<string, string> =
         | false -> Error "Disallowed URL."
         | true -> Ok(String.concat " " argv)
 
-let echoErrorMessage (message: string): int =
-    printfn "%s" message
+let echoErrorMessage (msg: string): int =
+    makeMessage msg |> printfn "%s"
     1
 
 let executeCommand (args: string): int =
+    makeMessage "Start Executing ab." |> printfn "%s"
     let command = new ProcessStartInfo(FileName = "ab")
-    command.Arguments <- sprintf "'%s'" args
-    command.UseShellExecute <- true
+    command.Arguments <- sprintf "%s" args
+    command.UseShellExecute <- false
+    command.RedirectStandardOutput <- true
 
     Process.Start(command) |> ignore
 
@@ -45,8 +47,8 @@ let executeCommand (args: string): int =
 
 [<EntryPoint>]
 let main argv =
-    printfn "%s" "Using SafeAB now."
+    makeMessage "Using SafeAB now." |> printfn "%s" 
 
     match validate argv with
     | Error message -> echoErrorMessage message
-    | Ok arguments -> executeCommand arguments
+    | Ok args -> executeCommand args
