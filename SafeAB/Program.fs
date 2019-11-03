@@ -35,7 +35,7 @@ let echoErrorMessage (message: string): int =
     1
 
 let executeCommand (args: string): int =
-    let command = new ProcessStartInfo(FileName = "echo")
+    let command = new ProcessStartInfo(FileName = "ab")
     command.Arguments <- sprintf "'%s'" args
     command.UseShellExecute <- true
 
