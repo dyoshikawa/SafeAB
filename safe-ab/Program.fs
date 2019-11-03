@@ -1,64 +1,36 @@
 ﻿open System
 open System.Diagnostics
 
-let errorMessage = "Invalid arguments."
+let makeErrorMessage msg: string =
+    sprintf "SafeAB: %s" msg
 
-type Arguments =
-    { nValue: int
-      cValue: int
-      url: Uri }
+let isAllowedUrl (url: Uri): bool =
+    url.Host = "localhost"
 
-let validateOptions (argv: string []): Result<(int * int), string> =
-    let nOption = argv.[0]
-    let nValue = argv.[1]
-    let cOption = argv.[2]
-    let cValue = argv.[3]
+let pickUrl (args: string []): Result<Uri, string> =
+    let urls: string [] = Array.filter (fun (arg: string) -> arg = "localhost") args
+    let parsedUrl = Uri(urls.[0])
+    if urls.Length = 1 then Ok parsedUrl
+    else Error "Invalid target url count."
 
-    let nOptionValid =
-        match nOption with
-        | "-n" -> true
-        | _ -> false
-    let cOptionValid =
-        match cOption with
-        | "-c" -> true
-        | _ -> false
-    
-    if not nOptionValid || not cOptionValid then
-        Error errorMessage
-    else
-        let nValueParseResult = Int32.TryParse nValue
-        let cValueParseResult = Int32.TryParse cValue
-        match (nValueParseResult, cValueParseResult) with
-        | ((true, n), (true, c)) -> Ok (n, c)
-        | _ -> Error errorMessage
+let validate (argv: string []): Result<string, string> =
+    let url = pickUrl argv
+    match url with
+    | Error msg -> Error msg
+    | Ok url ->
+        match isAllowedUrl url with
+        | false -> Error "Disallowed URL."
+        | true -> Ok ""
 
-let validateTargetUrl (url : string): Result<Uri, string> =
-    let parsedUrl = Uri(url)
-    let urlValid: bool =
-        if parsedUrl.Host = "localhost" then true
-        else false
-    match urlValid with
-    | true -> Ok parsedUrl
-    | false -> Error "Invalid target url."
-
-let validate (argv: string []): Result<Arguments, string> =
-    match validateOptions argv with
-    | Error message -> Error message
-    | Ok (n, c) ->
-        match validateTargetUrl argv.[4] with
-        | Error message -> Error message
-        | Ok url -> Ok { nValue = n
-                         cValue = c
-                         url = url }
 let echoErrorMessage (message: string): int =
     printfn "%s" message
     1
 
-let executeCommand (arguments: Arguments): int =
+let executeCommand (args: string): int =
     let command = new ProcessStartInfo(FileName = "echo")
-    command.Arguments <- sprintf "'%s %s %s'" (string arguments.nValue) (string arguments.cValue) (string arguments.url)
+    command.Arguments <- sprintf "'%s'" args
     command.UseShellExecute <- true
-    
+
     Process.Start(command) |> ignore
     
     0
