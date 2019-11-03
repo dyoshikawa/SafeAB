@@ -1,5 +1,4 @@
 ﻿open System
-open System
 open System.Diagnostics
 
 let errorMessage = "Invalid arguments."
