@@ -1,30 +1,25 @@
-﻿open System
+open System
 open System.Diagnostics
 open System.Text.RegularExpressions
 
-let makeErrorMessage msg: string =
-    sprintf "SafeAB: %s" msg
-    
-let allowedHosts (): string list =
-    [ "localhost" ]
+let makeErrorMessage msg: string = sprintf "SafeAB: %s" msg
 
-let isAllowedUrl (url: Uri): bool =
-    allowedHosts ()
-    |> List.contains url.Host
+let allowedHosts(): string list = [ "localhost" ]
 
-let isUrl (target: string) =
-    Regex.IsMatch(target, @"^s?https?://[-_.!~*'()a-zA-Z0-9;/?:@&=+$,%#]+$" )
+let isAllowedUrl (url: Uri): bool = allowedHosts() |> List.contains url.Host
+
+let isUrl (target: string) = Regex.IsMatch(target, @"^s?https?://[-_.!~*'()a-zA-Z0-9;/?:@&=+$,%#]+$")
 
 let parseUrl (target: string): Result<Uri, string> =
     match isUrl target with
-    | true -> Ok (Uri(target))
+    | true -> Ok(Uri(target))
     | false -> Error "Invalid url."
 
 let pickUrl (args: string []): Result<Uri, string> =
     let urls: string [] = Array.filter (fun (arg: string) -> isUrl arg) args
     match urls.Length with
     | 0 -> Error "Undefined target url."
-    | 1 -> Ok (Uri(urls.[0]))
+    | 1 -> Ok(Uri(urls.[0]))
     | _ -> Error "Target urls are too much."
 
 let validate (argv: string []): Result<string, string> =
@@ -33,7 +28,7 @@ let validate (argv: string []): Result<string, string> =
     | Ok url ->
         match isAllowedUrl url with
         | false -> Error "Disallowed URL."
-        | true -> Ok (String.concat " " argv)
+        | true -> Ok(String.concat " " argv)
 
 let echoErrorMessage (message: string): int =
     printfn "%s" message
@@ -45,13 +40,13 @@ let executeCommand (args: string): int =
     command.UseShellExecute <- true
 
     Process.Start(command) |> ignore
-    
+
     0
 
 [<EntryPoint>]
 let main argv =
     printfn "%s" "Using SafeAB now."
-    
+
     match validate argv with
     | Error message -> echoErrorMessage message
     | Ok arguments -> executeCommand arguments
