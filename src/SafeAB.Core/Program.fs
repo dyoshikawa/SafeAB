@@ -40,9 +40,7 @@ let executeCommand (args: string): int =
     command.Arguments <- sprintf "%s" args
     command.UseShellExecute <- false
     command.RedirectStandardOutput <- true
-
     Process.Start(command) |> ignore
-
     0
 
 [<EntryPoint>]
