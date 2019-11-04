@@ -45,7 +45,7 @@ let executeCommand (args: string): int =
 
 [<EntryPoint>]
 let main argv =
-    makeMessage "Using SafeAB now." |> printfn "%s" 
+    makeMessage "Using SafeAB now." |> printfn "%s"
 
     match validate argv with
     | Error message -> echoErrorMessage message

@@ -3,7 +3,7 @@
 os=osx
 
 format:
-	~/.dotnet/tools/fantomas ./safe-ab --recurse
+	~/.dotnet/tools/fantomas ./src --recurse
 
 build: build-osx build-linux
 

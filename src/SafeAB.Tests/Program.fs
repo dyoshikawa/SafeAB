@@ -1,11 +1,12 @@
 open Expecto
 
+[<Tests>]
 let tests =
-  test "A simple test" {
-    let subject = "Hello World"
-    Expect.equal subject "Hello World" "The strings should equal"
-  }
+    test "A simple test" {
+        let subject = "Hello World"
+        Expect.equal subject "Hello World" "The strings should equal"
+    }
+
 
 [<EntryPoint>]
-let main args =
-  runTestsWithArgs defaultConfig args tests
+let main args = runTestsInAssembly defaultConfig args
